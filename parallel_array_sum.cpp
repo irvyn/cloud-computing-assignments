@@ -1,5 +1,7 @@
 #include <iostream> // Librería estándar para el manejo de flujos de entrada y salida (cout)
 #include <omp.h>    // Librería de OpenMP para habilitar funciones y directivas de multinúcleo
+#include <cstdlib>
+#include <ctime>
 
 // Macros: Definiciones que el preprocesador reemplaza antes de la compilación
 #define N 1000      // Cantidad total de elementos en los arreglos
@@ -18,14 +20,13 @@ int main()
     float a[N], b[N], c[N];
     int pedazos = chunk;
 
-    // Directiva OpenMP: Divide el ciclo for entre los hilos disponibles
-    // schedule(static, pedazos): Reparte el trabajo en bloques fijos de tamaño 'pedazos'
+    // Se paraleliza la asignación con números aleatorios entre 0 y 99
     #pragma omp parallel for schedule(static, pedazos)
     for (int i = 0; i < N; i++) {
-        a[i] = i + 1;
-        b[i] = i + 11;
+        a[i] = rand() % 100; // Genera un número aleatorio entre 0 y 99
+        b[i] = rand() % 100; // Genera otro número aleatorio entre 0 y 99
     }
-
+    
     // Nueva región paralela para realizar la suma de vectores
     // Los hilos se sincronizan automáticamente al finalizar el ciclo
     #pragma omp parallel for schedule(static, pedazos)
